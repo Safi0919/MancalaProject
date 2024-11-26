@@ -4,10 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MancalaController {
-    private MancalaModel model;
+    private Model model;
     private MancalaView view;
 
-    public MancalaController(MancalaModel model, MancalaView view) {
+    public MancalaController(Model model, MancalaView view) {
         this.model = model;
         this.view = view;
 
