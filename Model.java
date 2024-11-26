@@ -1,6 +1,8 @@
+import java.util.ArrayList; import javax.swing.event.*;
 public class Model{
     private int currentBoard[]; //0-5 are player A's pits, 6 is player A's mancala, 7-12 are player B's pits, 13 is player B's mancala
     private int previousBoard[];
+    private ArrayList<ChangeListener> listeners;
     private char currentPlayer;
     private char previousPlayer;
     private int undoCounter;
@@ -18,12 +20,18 @@ public class Model{
         undoCounter = 0;
         moveCounter = 0;
         endState = 0;
+        listeners = new ArrayList<ChangeListener>();
 
     }
 
     public int getCurrentBoard(int index){
         return currentBoard[index];
     }
+
+    public void addChangeListener(ChangeListener listener)
+   {
+      listeners.add(listener);
+   }
 
     public int getPreviousBoard(int index){
         return previousBoard[index];
@@ -108,6 +116,10 @@ public class Model{
             return true;
         }
         //notify listeners
+        ChangeEvent event = new ChangeEvent(this);
+        for(ChangeListener listener : listeners){
+            listener.stateChanged(event);
+        }
 
     }
 
@@ -166,7 +178,10 @@ public class Model{
         endGame();
         
         //notify listeners
-        
+        ChangeEvent event = new ChangeEvent(this);
+        for(ChangeListener listener : listeners){
+            listener.stateChanged(event);
+        }
         return true;
 
     }
@@ -215,7 +230,7 @@ public class Model{
         }
     }
 
-    public void endGame(){
+    public void endGame(){//to update endState if game has ended
         boolean isEmptyA = true; boolean isEmptyB = true; int addA = 0; int addB = 0;
         for(int i = 0; i < 6; i++){
             if(currentBoard[i] != 0){
