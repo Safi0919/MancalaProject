@@ -95,7 +95,7 @@ public class Model{
     }
 
     public void printBoard(){
-        System.out.println("Current Board:");
+        System.out.println("Current Board: (Undo Count = " + undoCounter + " Move Count = " + moveCounter + ")");
         System.out.println("Player " + currentPlayer + "'s Turn");
         System.out.print("  ");
         for(int i = 12; i >= 7; i--){
@@ -129,6 +129,9 @@ public class Model{
 
     public boolean undo(){
         if(moveCounter == 0 || undoCounter == 3){ //illegal undo, either game has just started, or player hasn't made a move since they last pressed undo, or player has made 3 undos in a row
+            // if(undoCounter == 3 && moveCounter == 1){
+            //     undoCounter = 0;
+            // }
             return false;
         }
         else{
@@ -193,6 +196,9 @@ public class Model{
             previousBoard[i] = currentBoard[i];
         }
         moveCounter++;
+        if(moveCounter != 1){ //if player's last move wasn't undone, undoCounter gets reset
+                undoCounter = 0;
+        }
         int currentPit = index; int numStones = currentBoard[index];
         while(numStones > 0){
             currentPit++;
