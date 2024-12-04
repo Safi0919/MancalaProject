@@ -113,14 +113,17 @@ public class Model{
             }
             moveCounter = 0;
             undoCounter++;
+
+             //notify listeners
+            ChangeEvent event = new ChangeEvent(this);
+            for(ChangeListener listener : listeners){
+                listener.stateChanged(event);
+            }
+
             return true;
         }
-        //notify listeners
-        ChangeEvent event = new ChangeEvent(this);
-        for(ChangeListener listener : listeners){
-            listener.stateChanged(event);
-        }
-
+       
+        
     }
 
     public boolean isYourPit(int index){
@@ -145,7 +148,7 @@ public class Model{
          
     }
 
-    public boolean distributeStones(int index){//returns whether move was valid or not
+    public boolean distributeStones(int index){//returns whether move was valid or not, takes care of updating board according to move that was made if move was valid
         if(index == 6 || index == 13){ //if a mancala was picked, not a valid move
             return false;
         }
@@ -230,7 +233,7 @@ public class Model{
         }
     }
 
-    public void endGame(){//to update endState if game has ended
+    public void endGame(){//to update endState if game has
         boolean isEmptyA = true; boolean isEmptyB = true; int addA = 0; int addB = 0;
         for(int i = 0; i < 6; i++){
             if(currentBoard[i] != 0){
