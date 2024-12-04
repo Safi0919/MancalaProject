@@ -10,11 +10,13 @@ public class Model{
     private char endState; //if game ends, will contain which player won (would be C if game tied); else has null char
     public Model(int num){
         currentBoard = new int[14];
+        previousBoard = new int[14];
         for(int i = 0; i < 6; i++){
             currentBoard[i] = num;
             currentBoard[i+7] = num;
+            previousBoard[i] = num;
+            previousBoard[i+7] = num;
         }
-        previousBoard = new int[14];
         currentPlayer = 'A';
         previousPlayer = 0;
         undoCounter = 0;
@@ -43,6 +45,10 @@ public class Model{
 
     public char getPreviousPlayer(){
         return previousPlayer;
+    }
+
+    public char getEndState(){
+        return endState;
     }
 
     public int getUndoCounter(){
@@ -88,23 +94,44 @@ public class Model{
     }
 
     public void printBoard(){
+        System.out.println("Current Board:");
+        System.out.println("Player " + currentPlayer + "'s Turn");
+        System.out.print("  ");
         for(int i = 12; i >= 7; i--){
             System.out.print(currentBoard[i] + " ");
         }
         System.out.println();
         System.out.println(currentBoard[13] + "                 " + currentBoard[6]);
+        System.out.print("  ");
         for(int i = 0; i < 6; i++){
             System.out.print(currentBoard[i] + " ");
         }
         System.out.println();
     }
 
+    public void printPreviousBoard(){
+        System.out.println("Previous Board:");
+        System.out.println("Player " + previousPlayer + "'s Turn");
+        System.out.print("  ");
+        for(int i = 12; i >= 7; i--){
+            System.out.print(previousBoard[i] + " ");
+        }
+        System.out.println();
+        System.out.println(previousBoard[13] + "                 " + previousBoard[6]);
+        System.out.print("  ");
+        for(int i = 0; i < 6; i++){
+            System.out.print(previousBoard[i] + " ");
+        }
+        System.out.println();
+    }
+
+
     public boolean undo(){
         if(moveCounter == 0 || undoCounter == 3){ //illegal undo, either game has just started, or player hasn't made a move since they last pressed undo, or player has made 3 undos in a row
             return false;
         }
         else{
-            for(int i : currentBoard){
+            for(int i = 0; i < 14; i++){
                 currentBoard[i] = previousBoard[i];
             }
             currentPlayer = previousPlayer;
@@ -161,7 +188,7 @@ public class Model{
         else if(currentPlayer == 'B' && index <= 5){//if other player's pit was picked, not a valid move
             return false;
         }
-        for(int i : currentBoard){//update previousBoard
+        for(int i = 0; i < 14; i++){//update previousBoard
             previousBoard[i] = currentBoard[i];
         }
         moveCounter++;
@@ -172,10 +199,12 @@ public class Model{
             currentBoard[currentPit]++;
             numStones--;
         }
+        currentBoard[index] = numStones;
 
         checkOppositePit(currentPit);
         previousPlayer = currentPlayer;
         if(!isYourMancala(currentPit)){
+            //System.out.print("Not Your Mancala, current player is " + currentPlayer + ", current pit is " + currentPit);
             switchPlayer();
         }
         endGame();
@@ -205,14 +234,15 @@ public class Model{
         if(currentPit == 6 || currentPit == 13){
             return false;
         }
-        else if(currentBoard[currentPit] != 0){
+        else if(currentBoard[currentPit] != 1){
             return false;
         }
         else{
+            int oppositePit = getOppositePit(currentPit);
             if(currentPlayer == 'A' && currentPit < 6){
-                if(currentBoard[currentPit + 7] != 0){
-                    int addStones = currentBoard[currentPit + 7] + 1;
-                    currentBoard[currentPit + 7] = 0;
+                if(currentBoard[oppositePit] != 0){
+                    int addStones = currentBoard[oppositePit] + 1;
+                    currentBoard[oppositePit] = 0;
                     currentBoard[currentPit] = 0;
                     currentBoard[6] += addStones;
                     return true;
@@ -220,9 +250,9 @@ public class Model{
                 }
             }
             else if(currentPlayer == 'B' && currentPit >= 7){
-                if(currentBoard[currentPit%7] != 0){
-                    int addStones = currentBoard[currentPit%7] + 1;
-                    currentBoard[currentPit%7] = 0;
+                if(currentBoard[oppositePit] != 0){
+                    int addStones = currentBoard[oppositePit] + 1;
+                    currentBoard[oppositePit] = 0;
                     currentBoard[currentPit] = 0;
                     currentBoard[13] += addStones;
                     return true;
@@ -230,6 +260,51 @@ public class Model{
                 }
             }
             return false;
+        }
+    }
+
+    public int getOppositePit(int index){
+        if(index == 0){
+            return 12;
+        }
+        if(index == 1){
+            return 11;
+        }
+        if(index == 2){
+            return 10;
+        }
+        if(index == 3){
+            return 9;
+        }
+        if(index == 4){
+            return 8;
+        }
+        if(index == 5){
+            return 7;
+        }
+        if(index == 12){
+            return 0;
+        }
+        if(index == 11){
+            return 1;
+        }
+        if(index == 10){
+            return 2;
+        }
+        if(index == 9){
+            return 3;
+        }
+        if(index == 8){
+            return 4;
+        }
+        if(index == 7){
+            return 5;
+        }
+        else if(index == 6){
+            return 13;
+        }
+        else{
+            return 6;
         }
     }
 
