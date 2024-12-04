@@ -1,6 +1,6 @@
 import java.util.ArrayList; import javax.swing.event.*;
 public class Model{
-    private int currentBoard[]; //0-5 are player A's pits, 6 is player A's mancala, 7-12 are player B's pits, 13 is player B's mancala
+    private int currentBoard[]; //0-5 are player A's pits (A1-A6), 6 is player A's mancala, 7-12 are player B's pits (B1-B6), 13 is player B's mancala
     private int previousBoard[];
     private ArrayList<ChangeListener> listeners;
     private char currentPlayer;
@@ -8,6 +8,7 @@ public class Model{
     private int undoCounter;
     private int moveCounter; //number of moves made since start of the game/last undo
     private char endState; //if game ends, will contain which player won (would be C if game tied); else has null char
+
     public Model(int num){
         currentBoard = new int[14];
         previousBoard = new int[14];
@@ -263,52 +264,24 @@ public class Model{
         }
     }
 
-    public int getOppositePit(int index){
-        if(index == 0){
-            return 12;
-        }
-        if(index == 1){
-            return 11;
-        }
-        if(index == 2){
-            return 10;
-        }
-        if(index == 3){
-            return 9;
-        }
-        if(index == 4){
-            return 8;
-        }
-        if(index == 5){
-            return 7;
-        }
-        if(index == 12){
-            return 0;
-        }
-        if(index == 11){
-            return 1;
-        }
-        if(index == 10){
-            return 2;
-        }
-        if(index == 9){
-            return 3;
-        }
-        if(index == 8){
-            return 4;
-        }
-        if(index == 7){
-            return 5;
-        }
-        else if(index == 6){
-            return 13;
-        }
-        else{
-            return 6;
-        }
+    public int getOppositePit(int index){//returns opposite pit on board to yours
+        if(index == 0){return 12;}
+        if(index == 1){return 11;}
+        if(index == 2){return 10;}
+        if(index == 3){return 9;}
+        if(index == 4){return 8;}
+        if(index == 5){return 7;}
+        if(index == 12){return 0;}
+        if(index == 11){return 1;}
+        if(index == 10){return 2;}
+        if(index == 9){return 3;}
+        if(index == 8){return 4;}
+        if(index == 7){return 5;}
+        else if(index == 6){return 13;}
+        else{return 6;}
     }
 
-    public void endGame(){//to update endState if game has
+    public void endGame(){//to check if game has ended and update endState and board if it has
         boolean isEmptyA = true; boolean isEmptyB = true; int addA = 0; int addB = 0;
         for(int i = 0; i < 6; i++){
             if(currentBoard[i] != 0){

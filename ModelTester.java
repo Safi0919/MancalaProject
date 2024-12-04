@@ -16,10 +16,10 @@ public class ModelTester {
             }
             else{
                 if(input.charAt(0) == 'A'){
-                    pitChosen = input.charAt(1) - '0';
+                    pitChosen = input.charAt(1) - '0' - 1;
                 }
                 else{
-                    pitChosen = input.charAt(1) - '0' + 7;
+                    pitChosen = input.charAt(1) - '0' + 7 - 1;
                 }
                 if(!model.distributeStones(pitChosen)){
                     System.out.println("Illegal Move");
